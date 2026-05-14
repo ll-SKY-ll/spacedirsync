@@ -1,0 +1,62 @@
+# Target space — the space room ID that will mirror the upstream directory.
+space_room_id: "!myultrafancyroomid:example.org"
+
+# Upstream directory source.
+# `server` is passed as ?server= on the publicRooms request, telling your
+# local homeserver which remote server's directory to scrape.
+# Leave `server` empty to fetch your *own* homeserver's directory.
+directory:
+  server: "matrix.org"
+  page_limit: 100
+  # Optional generic_search_term filter. Leave "" for no filter.
+  search_term: ""
+  # Per-page delay in seconds (be polite to the upstream server).
+  page_delay: 1.0
+
+# via servers written into m.space.child events. Pick servers that are
+# likely to have the room federated and stay online.
+via_servers:
+  - "matrix.org"
+
+# Scheduled sync interval. Set to 0 to disable scheduled runs (commands still work).
+# Common values: 3600 (1h), 21600 (6h), 86400 (24h).
+schedule_interval_seconds: 21600
+
+# If true, run a sync once shortly after plugin start. If false, wait one
+# full interval before the first scheduled run.
+run_on_start: false
+
+# Dry-run mode for scheduled runs. Commands have their own dryrun option.
+# When true, scheduled runs only log what they *would* do.
+scheduled_dry_run: false
+
+# Pause in seconds between individual add/remove API calls during a sync,
+# to spread load on the homeserver.
+api_call_delay: 0.5
+
+# Access control. Only these MXIDs can invoke commands. Empty list = no one
+# (scheduled runs still happen). The plugin owner is always allowed.
+admins:
+  - "@example:example.org"
+
+# Optional control/log room. If set, sync results are posted here.
+# Leave empty to disable.
+control_room: ""
+
+# When to post scheduled-sync results to the control room.
+#   always   - every scheduled run, even no-op
+#   changes  - only when something was added/removed, or aborted
+#   failures - only on aborts and exceptions (silent on success, even with changes)
+#   never    - never post (scheduled runs are fully silent)
+# Manual !spacedirsync sync/dryrun commands always reply in their own room
+# regardless of this setting. Has no effect if control_room is empty.
+notify_on: "changes"
+
+# Per-sync safety cap: refuse a sync if it would change more rooms than this.
+# Set to 0 to disable the cap. Useful to avoid mass-removals if the upstream
+# directory returns an empty/short response due to an outage.
+max_changes_per_sync: 500
+
+# If the upstream directory returns 0 rooms, abort the sync instead of
+# wiping the space. Strongly recommended.
+abort_on_empty_directory: true

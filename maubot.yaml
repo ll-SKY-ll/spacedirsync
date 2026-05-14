@@ -1,0 +1,11 @@
+maubot: 0.1.0
+id: net.codestorm.spacedirsync
+version: 1.1.0
+license: MIT
+modules:
+  - spacedirsync
+main_class: SpaceDirSyncBot
+config: true
+extra_files:
+  - base-config.yaml
+dependencies: []
